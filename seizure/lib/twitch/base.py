@@ -1,3 +1,6 @@
+import json
+
+
 class Twitch(object):
     """
     Consume Twitch API.
@@ -5,10 +8,13 @@ class Twitch(object):
     def __init__(self):
         pass
 
+    def _to_json(self, content):
+        return json.loads(content)
 
-class REST(object):
+    def validate_response(self, response):
+        response.raise_for_status()
+
+
+class Resource(object):
     def __init__(self, api):
         self.api = api
-
-    def get(self, *args, **kwargs):
-        raise NotImplementedError()

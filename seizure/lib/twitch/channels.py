@@ -1,7 +1,10 @@
-from seizure.lib.twitch.base import REST
+from urllib.parse import urljoin
+from seizure.lib.twitch.base import Resource
 
 
-class Channels(REST):
+class ChannelV2(Resource):
+    base_path = 'channels/'
+
     def get(self, name):
-        request = 'foo'
-        self.api.get_channel(request)
+        url = urljoin(self.base_path, name)
+        return self.api.get(url)
