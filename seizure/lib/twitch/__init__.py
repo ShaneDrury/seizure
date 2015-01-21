@@ -1,4 +1,15 @@
-from seizure.lib.twitch.apiv2 import TwitchAPIV2
+import json
+from urllib.parse import urljoin
+
+import requests
+
+BASE_URL = 'https://api.twitch.tv/kraken/'
+MIME_TYPE = 'application/vnd.twitchtv.v2+json'
 
 
-api = TwitchAPIV2()
+def request(resource, **params):
+    headers = {'Accept': MIME_TYPE}
+    response = requests.get(urljoin(BASE_URL, resource),
+                            headers=headers, **params)
+    response.raise_for_status()
+    return json.loads(response.text)

@@ -2,19 +2,16 @@ import unittest
 
 from requests import HTTPError
 
-from seizure.lib.twitch import api
+from seizure.lib.twitch import request
 
 
 class TestChannels(unittest.TestCase):
-    def setUp(self):
-        self.api = api
-
     def test_get_channel(self):
         """
         A lot of keys in the response are not guaranteed to be constant, so
         we have to get rid of them before comparing equality.
         """
-        response = self.api.channel.get('test_user1')
+        response = request('channels/test_user1')
         to_pop = ['updated_at', 'background', 'video_banner', 'banner',
                   'mature', 'status', 'display_name', 'game', 'teams', 'logo']
         for k in to_pop:
@@ -46,7 +43,11 @@ class TestChannels(unittest.TestCase):
         self.assertDictEqual(response, expected)
 
     def test_channel_doesnt_exist(self):
-        self.assertRaises(HTTPError, self.api.channel.get, 'doesnotexist')
+        self.assertRaises(HTTPError, request, 'channels/doesnotexist')
+
+    def test_channel_videos(self):
+        response = request('channels/test_user1/videos')
+        self.assertEqual(response['videos'], [])
 
 
 if __name__ == '__main__':
