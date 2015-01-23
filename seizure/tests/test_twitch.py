@@ -1,12 +1,14 @@
+import os
 import unittest
 
 from requests import HTTPError
 
 from seizure.lib.twitch import request
+from seizure.tests.util import skip_if_local
 
 
 class TestTwitch(unittest.TestCase):
-    @unittest.skip('Slow')
+    @skip_if_local('slow')
     def test_get_channel(self):
         """
         A lot of keys in the response are not guaranteed to be constant, so
@@ -43,15 +45,14 @@ class TestTwitch(unittest.TestCase):
         }
         self.assertDictEqual(response, expected)
 
-    @unittest.skip('Slow')
+    @skip_if_local('slow')
     def test_channel_doesnt_exist(self):
         self.assertRaises(HTTPError, request, 'channels/doesnotexist')
 
-    @unittest.skip('Slow')
+    @unittest.skipIf(os.environ.get('LOCAL', False), 'slow')
     def test_channel_videos(self):
         response = request('channels/test_user1/videos')
         self.assertEqual(response['videos'], [])
-
 
 if __name__ == '__main__':
     unittest.main()
