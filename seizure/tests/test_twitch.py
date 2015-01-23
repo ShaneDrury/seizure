@@ -5,7 +5,8 @@ from requests import HTTPError
 from seizure.lib.twitch import request
 
 
-class TestChannels(unittest.TestCase):
+class TestTwitch(unittest.TestCase):
+    @unittest.skip('Slow')
     def test_get_channel(self):
         """
         A lot of keys in the response are not guaranteed to be constant, so
@@ -42,9 +43,11 @@ class TestChannels(unittest.TestCase):
         }
         self.assertDictEqual(response, expected)
 
+    @unittest.skip('Slow')
     def test_channel_doesnt_exist(self):
         self.assertRaises(HTTPError, request, 'channels/doesnotexist')
 
+    @unittest.skip('Slow')
     def test_channel_videos(self):
         response = request('channels/test_user1/videos')
         self.assertEqual(response['videos'], [])

@@ -1,20 +1,21 @@
 import os
+import re
+import unicodedata
 
 
-def generate_path(video):
-    """
-    Generate a path in which to save the video.
+def sanitize(value):
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub('[^\w\s-]', '', value).strip().lower()
+    return re.sub('[-\s]+', '-', value)
 
-    Saves as '{}_{TIME}.flv'
-    :param video:
-    :return:
-    """
-    raise NotImplementedError()
+
+def generate_filename(video):
+    title = sanitize(video.title)
+    t = sanitize(video.start_time)
+    extension = video.extension
+    return "{}_{}.{}".format(title, t, extension)
 
 
 def rename_extension(path, extension):
-    head = os.path.splitext(path)[0]
-    # os.path.
-
-    raise NotImplementedError()
-    return 'foo.mp4'
+    ext = os.path.splitext(path)[1].split('.')[-1]
+    return path.replace(ext, extension)
