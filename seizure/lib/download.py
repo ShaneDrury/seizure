@@ -1,3 +1,4 @@
+import os
 import requests
 
 from seizure.lib.paths import rename_extension, files_from_vod, generate_filename
@@ -14,6 +15,8 @@ def requests_download_file(response, to):
 
 def download(url, to=None):
     to = to or url.split('/')[-1]
+    if os.path.exists(to):
+        raise IOError('{} exists'.format(to))
     response = requests.get(url, stream=True)
     response.raise_for_status()
     requests_download_file(response, to)
