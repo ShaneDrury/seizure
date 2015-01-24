@@ -9,11 +9,19 @@ def sanitize(value):
     return re.sub('[-\s]+', '-', value)
 
 
-def generate_filename(video):
-    title = sanitize(video.title)
-    t = sanitize(video.start_time)
-    extension = video.extension
-    return "{}_{}.{}".format(title, t, extension)
+def files_from_vod(vod, quality=None):
+    try:
+        chunks = vod['chunks'][quality]
+    except KeyError:
+        raise ValueError('{} not found for {}'.format(quality, vod['title']))
+    return [c['url'] for c in chunks]
+
+
+def generate_filename(title, start_time, extension, num):
+    title = sanitize(title)
+    t = sanitize(start_time)
+    num = str(num).zfill(2)
+    return "{}_{}_{}.{}".format(title, t, num, extension)
 
 
 def rename_extension(path, extension):
