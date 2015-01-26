@@ -5,6 +5,7 @@ import requests
 
 BASE_URL = 'https://api.twitch.tv/kraken/'
 MIME_TYPE = 'application/vnd.twitchtv.v2+json'
+QUALITIES = ['240p', '360p', '480p', 'live']
 
 
 def request(resource, **kwargs):

@@ -1,8 +1,9 @@
-class Video(object):
-    def __init__(self):
-        self.title = None
-        self.extension = None
-        self.start_time = None
+from seizure.lib.twitch import QUALITIES
+
+
+def get_best_quality(vod):
+    available_qualities = vod['chunks'].keys()
+    return sorted(available_qualities, key=lambda x: QUALITIES.index(x))[-1]
 
 
 def join_videos(paths):

@@ -17,6 +17,10 @@ def files_from_vod(vod, quality=None):
     return [c['url'] for c in chunks]
 
 
+def get_extension(url):
+    return url.split('.')[-1]
+
+
 def generate_filename(title, start_time, extension, num):
     title = sanitize(title)
     t = sanitize(start_time)

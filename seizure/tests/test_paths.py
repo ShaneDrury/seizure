@@ -1,6 +1,6 @@
 import unittest
 
-from seizure.lib.paths import rename_extension, generate_filename, files_from_vod
+from seizure.lib.paths import rename_extension, generate_filename, files_from_vod, get_extension
 
 
 class TestPaths(unittest.TestCase):
@@ -15,6 +15,9 @@ class TestPaths(unittest.TestCase):
     def test_rename_extension_path(self):
         renamed = rename_extension('/tmp/seizure/foo.flv', 'mp4')
         self.assertEqual(renamed, '/tmp/seizure/foo.mp4')
+
+    def test_get_extension(self):
+        self.assertEqual(get_extension('http://testfoo.com/files/test.flv'), 'flv')
 
 
 class TestFilesVod(unittest.TestCase):
