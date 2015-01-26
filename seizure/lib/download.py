@@ -12,8 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class Downloader(object):
-    def __init__(self, vod: Video):
+    def __init__(self, vod: Video, config):
         self.vod = vod
+        self.config = config
 
     def download(self, quality=None, folder=''):
         quality = quality or self.vod.get_best_quality()
@@ -31,13 +32,7 @@ class Downloader(object):
         self.requests_download_file(response, to)
 
     def can_download_file(self, filename):
-        if os.path.exists(filename) or self.started(filename):
-            return False
-        else:
-            return True
-
-    def started(self, filename):
-        return True
+        return not self.config.finished(filename)
 
     @staticmethod
     def requests_download_file(response, to):
@@ -58,17 +53,3 @@ class Downloader(object):
         t = self.sanitize(self.vod.start_time)
         num = str(num).zfill(2)
         return "{}_{}_{}.{}".format(title, t, num, self.vod.extension)
-
-
-def download_vod(vod, quality=None):
-    for vid, path in zip(video_urls, paths):
-        if os.path.exists(path):
-            if vid in vod['started']:
-                logger.info("Redownloading {}".format(vid))
-                download(vid, to=path)
-            else:
-                logger.info("Already downloaded {}".format(vid))
-        else:
-            logger.info("Downloading {}".format(vid))
-            download(vid, to=path)
-    return paths
