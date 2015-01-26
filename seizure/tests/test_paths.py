@@ -1,7 +1,5 @@
 import unittest
 
-from seizure.lib.paths import rename_extension, generate_filename, files_from_vod, get_extension
-
 
 class TestPaths(unittest.TestCase):
     def test_generate_filename(self):
