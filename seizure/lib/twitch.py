@@ -1,16 +1,17 @@
-import json
 from urllib.parse import urljoin
 
 import requests
 
-BASE_URL = 'https://api.twitch.tv/kraken/'
-MIME_TYPE = 'application/vnd.twitchtv.v2+json'
-QUALITIES = ['240p', '360p', '480p', 'live']
 
+class Twitch(object):
+    BASE_URL = 'https://api.twitch.tv/kraken/'
+    MIME_TYPE = 'application/vnd.twitchtv.v2+json'
+    QUALITIES = ['240p', '360p', '480p', 'live']
 
-def request(resource, **kwargs):
-    headers = {'Accept': MIME_TYPE}
-    response = requests.get(urljoin(BASE_URL, resource),
-                            headers=headers, **kwargs)
-    response.raise_for_status()
-    return json.loads(response.text)
+    @classmethod
+    def request(cls, resource, **kwargs):
+        headers = {'Accept': cls.MIME_TYPE}
+        response = requests.get(urljoin(cls.BASE_URL, resource),
+                                headers=headers, **kwargs)
+        response.raise_for_status()
+        return response.json()

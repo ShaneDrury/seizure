@@ -10,6 +10,14 @@ from seizure.lib.video import join_videos, convert_video, get_best_quality
 logger = logging.getLogger(__name__)
 
 
+class Downloader(object):
+    def __init__(self, vod):
+        self.vod = vod
+
+    def download(self, quality=None, to=None):
+        pass
+
+
 def requests_download_file(response, to):
     with open(to, 'wb') as f:
         for block in response.iter_content(1024):
