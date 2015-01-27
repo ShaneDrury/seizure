@@ -2,9 +2,15 @@ from seizure.lib.twitch import Twitch
 
 
 class Video(object):
-    def __init__(self, url: str):
-        self.url = url
-        self.vod = Twitch.request(self.url)
+    def __init__(self, code: str):
+        self.code = code
+        # videos/a{id_}'
+        # /kraken/videos/a{id_}?on_site=1'
+        self.vod = Twitch.request("videos/a{}".format(self.code), kraken=False)
+        self.info = Twitch.request("videos/{}?onsite=1".format(self.code))
+        print(self.vod)
+        print(self.info)
+        print(self.code)
 
     def download_urls(self, quality):
         return [c['url'] for c in self.chunks[quality]]
@@ -23,7 +29,6 @@ class Video(object):
 
     @property
     def start_time(self):
-        # Convert to datetime? maybe not needed
         raise NotImplementedError()
 
     @property
@@ -37,4 +42,5 @@ class Video(object):
         return url.split('.')[-1]
 
     def get_best_quality(self):
-        return sorted(self.qualities, key=lambda x: Twitch.QUALITIES.index(x))[-1]
+        return sorted(self.qualities,
+                      key=lambda x: Twitch.QUALITIES.index(x))[-1]
