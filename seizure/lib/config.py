@@ -4,9 +4,9 @@ import os
 
 class Config(object):
     default_values = {
-        'FFmpeg Binary': 'ffmpeg',
-        'Download Folder': '.',
-        'Finished': ['', ],
+        'ffmpeg binary': 'ffmpeg',
+        'download folder': '.',
+        'finished': ['', ],
         }
 
     def __init__(self, filename):
@@ -16,15 +16,16 @@ class Config(object):
         if not os.path.exists(self.filename):
             self.write_initial()
 
-    def started(self, filename):
-        """Has the filename been started?"""
-        return filename in self.config['STARTED']
-
     def finished(self, filename):
         """Has the filename been started?"""
-        return filename in self.config['FINISHED']
+        return filename in self.config['DEFAULT']['finished']
 
     def write_initial(self):
         self.config['DEFAULT'] = self.default_values
+        with open(self.filename, 'w') as f:
+            self.config.write(f)
+
+    def update(self, key, value):
+        self.config['DEFAULT'][key] = str(value)
         with open(self.filename, 'w') as f:
             self.config.write(f)
