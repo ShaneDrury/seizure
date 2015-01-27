@@ -1,7 +1,6 @@
 import unittest
-from seizure.lib.config import Config
-from seizure.lib.download import Downloader
-from seizure.lib.video import Video
+
+from seizure.lib.conversion import Converter
 
 
 class TestPaths(unittest.TestCase):
@@ -9,9 +8,9 @@ class TestPaths(unittest.TestCase):
         pass
 
     def test_rename_extension(self):
-        renamed = self.downloader.rename_extension('foo.flv', 'mp4')
+        renamed = Converter.rename_extension('foo.flv', 'mp4')
         self.assertEqual(renamed, 'foo.mp4')
 
     def test_rename_extension_path(self):
-        renamed = rename_extension('/tmp/seizure/foo.flv', 'mp4')
+        renamed = Converter.rename_extension('/tmp/seizure/foo.flv', 'mp4')
         self.assertEqual(renamed, '/tmp/seizure/foo.mp4')
