@@ -4,20 +4,30 @@ from seizure.lib.video import Video
 
 class TestVideo(unittest.TestCase):
     def setUp(self):
-        self.code = '3726758'
-        # 3726758
+        self.code = '609886511'
         self.video = Video(self.code)
-        # self.vod = {
-        #     'chunks': {
-        #         '360p': [{'url': 'url1'}, {'url': 'url2'}],
-        #         'live': [{'url': 'url1'}, {'url': 'url2'}],
-        #         '240p': [{'url': 'url1'}, {'url': 'url2'}],
-        #         '480p': [{'url': 'url1'}, {'url': 'url2'}],
-        #     }
-        # }
 
     def test_get_best_quality(self):
         self.assertEqual(self.video.get_best_quality(), 'live')
+
+    def test_chunks(self):
+        for k, v in self.video.chunks.items():
+            self.assertIsInstance(v, list)
+
+    def test_title(self):
+        self.assertEqual(self.video.title, '#AGDQ2015 Benefiting the Prevent Cancer Foundation')
+
+    def test_game(self):
+        self.assertEqual(self.video.game, 'Super Smash Bros. Melee')
+
+    def test_start_time(self):
+        self.assertEqual(self.video.start_time, '2015-01-11T18:07:25Z')
+
+    def test_qualities(self):
+        self.assertEqual(sorted(self.video.qualities), ['240p', '360p', '480p', 'live'])
+
+    def test_extension(self):
+        self.assertEqual(self.video.extension, 'flv')
 
 
 if __name__ == '__main__':

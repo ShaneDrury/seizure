@@ -9,10 +9,9 @@ class Twitch(object):
     QUALITIES = ['240p', '360p', '480p', 'live']
 
     @classmethod
-    def request(cls, resource, kraken=True, **kwargs):
-        kraken = 'kraken/' if kraken else ''
+    def request(cls, resource, **kwargs):
         headers = {'Accept': cls.MIME_TYPE}
-        response = requests.get(urljoin(cls.BASE_URL + kraken, resource),
+        response = requests.get(urljoin(cls.BASE_URL, resource),
                                 headers=headers, **kwargs)
         response.raise_for_status()
         return response.json()
