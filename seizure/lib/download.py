@@ -1,4 +1,3 @@
-from functools import partial
 import os
 import logging
 import re
@@ -6,36 +5,38 @@ import unicodedata
 
 import requests
 
+from seizure.lib.config import Config
 from seizure.lib.video import Video
 
 logger = logging.getLogger(__name__)
 
 
 class Downloader(object):
-    def __init__(self, vod: Video, config):
+    def __init__(self, vod: Video, config: Config):
         self.vod = vod
         self.config = config
 
     def download(self, quality=None, folder=''):
         quality = quality or self.vod.get_best_quality()
         video_urls = self.vod.download_urls(quality)
-        filenames = [self.generate_filename(n) for n, url in video_urls]
+        filenames = [os.path.join(folder, self.generate_filename(n))
+                     for n, url in enumerate(video_urls)]
         for v, f in zip(video_urls, filenames):
             if self.can_download_file(f):
-                self.download_chunk(os.path.join(folder, f), v)
+                self.download_chunk(v, f)
         return filenames
 
     def download_chunk(self, url, to):
         to = to or url.split('/')[-1]
         response = requests.get(url, stream=True)
         response.raise_for_status()
-        self.requests_download_file(response, to)
+        self.write_to_file(response, to)
 
     def can_download_file(self, filename):
         return not self.config.finished(filename)
 
     @staticmethod
-    def requests_download_file(response, to):
+    def write_to_file(response, to):
         with open(to, 'wb') as f:
             for block in response.iter_content(1024):
                 if not block:
