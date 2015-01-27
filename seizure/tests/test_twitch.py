@@ -2,8 +2,8 @@ import os
 import unittest
 
 from requests import HTTPError
-from seizure.lib.twitch import Twitch
 
+from seizure.lib.twitch import Twitch
 from seizure.tests.util import skip_if_local
 
 

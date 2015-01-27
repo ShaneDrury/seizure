@@ -1,4 +1,5 @@
 import unittest
+
 from seizure.lib.video import Video
 from seizure.tests.util import skip_if_local
 
