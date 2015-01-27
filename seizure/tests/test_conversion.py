@@ -3,9 +3,13 @@ import unittest
 from seizure.lib.conversion import Converter
 
 
-class TestPaths(unittest.TestCase):
+class TestConversion(unittest.TestCase):
+    """
+    Note, we are not testing ffmpeg, just the interface of the class.
+    """
     def setUp(self):
-        pass
+        self.paths = ['path_01.flv', 'path_02.flv']
+        self.converter = Converter('ffmpeg')
 
     def test_rename_extension(self):
         renamed = Converter.rename_extension('foo.flv', 'mp4')
@@ -16,10 +20,9 @@ class TestPaths(unittest.TestCase):
         self.assertEqual(renamed, '/tmp/seizure/foo.mp4')
 
     def test_convert(self):
-        self.assertEqual(True, False)
-
-    def test_convert_one(self):
-        self.assertEqual(True, False)
+        converted = self.converter.convert(self.paths, to='mp4')
+        self.assertEqual(converted, 'path.mp4')
 
     def test_join(self):
-        self.assertEqual(True, False)
+        joined = self.converter.join(self.paths)
+        self.assertEqual(joined, 'path.flv')

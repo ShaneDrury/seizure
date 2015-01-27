@@ -20,7 +20,8 @@ class TestVideo(unittest.TestCase):
 
     @skip_if_local('slow')
     def test_title(self):
-        self.assertEqual(self.video.title, '#AGDQ2015 Benefiting the Prevent Cancer Foundation')
+        self.assertEqual(self.video.title,
+                         '#AGDQ2015 Benefiting the Prevent Cancer Foundation')
 
     @skip_if_local('slow')
     def test_game(self):
@@ -32,7 +33,8 @@ class TestVideo(unittest.TestCase):
 
     @skip_if_local('slow')
     def test_qualities(self):
-        self.assertEqual(sorted(self.video.qualities), ['240p', '360p', '480p', 'live'])
+        self.assertEqual(sorted(self.video.qualities),
+                         ['240p', '360p', '480p', 'live'])
 
     @skip_if_local('slow')
     def test_extension(self):

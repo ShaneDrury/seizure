@@ -41,8 +41,10 @@ class TestDownloader(unittest.TestCase):
     @patch('seizure.lib.download.requests.get')
     def test_download_folder(self, magic_get):
         paths = self.downloader.download(folder='testfolder')
-        expected = [os.path.join('testfolder', 'foo_2011-06-02t200403z_00.flv'),
-                    os.path.join('testfolder', 'foo_2011-06-02t200403z_01.flv')]
+        expected = [
+            os.path.join('testfolder', 'foo_2011-06-02t200403z_00.flv'),
+            os.path.join('testfolder', 'foo_2011-06-02t200403z_01.flv')
+        ]
         calls = [call(magic_get(), 'testfolder/foo_2011-06-02t200403z_00.flv'),
                  call(magic_get(), 'testfolder/foo_2011-06-02t200403z_01.flv')]
         self.assertDownloaded(magic_get, self.vod.download_urls.return_value,
@@ -52,7 +54,8 @@ class TestDownloader(unittest.TestCase):
     @patch('seizure.lib.download.requests.get')
     def test_download_chunk(self, magic_get):
         self.downloader.download_chunk('url1', 'fname')
-        self.assertDownloaded(magic_get, ['url1'], [call(magic_get(), 'fname')])
+        self.assertDownloaded(magic_get, ['url1'],
+                              [call(magic_get(), 'fname')])
 
     def test_default_filename(self):
         self.assertEqual(

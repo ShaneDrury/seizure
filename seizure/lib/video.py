@@ -5,7 +5,9 @@ class Video(object):
     def __init__(self, code: str):
         self.code = code
         self.vod = Twitch.request("api/videos/a{}".format(self.code))
-        self.info = Twitch.request("kraken/videos/a{}?on_site=1".format(self.code))
+        self.info = Twitch.request(
+            "kraken/videos/a{}?on_site=1".format(self.code)
+        )
 
     def download_urls(self, quality):
         return [c['url'] for c in self.chunks[quality]]

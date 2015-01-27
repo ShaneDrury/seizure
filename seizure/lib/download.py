@@ -48,7 +48,8 @@ class Downloader(object):
 
     @staticmethod
     def sanitize(value):
-        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+        value = unicodedata.normalize('NFKD', value).\
+            encode('ascii', 'ignore').decode('ascii')
         value = re.sub('[^\w\s-]', '', value).strip().lower()
         return re.sub('[-\s]+', '-', value)
 
