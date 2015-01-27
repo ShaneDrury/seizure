@@ -27,10 +27,13 @@ class Downloader(object):
         return filenames
 
     def download_chunk(self, url, to):
-        to = to or url.split('/')[-1]
+        to = to or self.default_filename(url)
         response = requests.get(url, stream=True)
         response.raise_for_status()
         self.write_to_file(response, to)
+
+    def default_filename(self, url):
+        return url.split('/')[-1]
 
     def can_download_file(self, filename):
         return not self.config.finished(filename)

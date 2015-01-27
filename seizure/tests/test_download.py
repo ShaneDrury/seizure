@@ -19,45 +19,65 @@ class TestDownloader(unittest.TestCase):
         self.downloader = Downloader(self.vod, self.config)
         self.downloader.write_to_file = MagicMock()
 
-    def assertDownloaded(self, magic_get):
-        # TODO: Remove hard coded stuff
-        calls = [call('url1', stream=True),
-                 call().raise_for_status(),
-                 call('url2', stream=True),
-                 call().raise_for_status()]
+    def assertDownloaded(self, magic_get, urls, expected_calls):
+        calls = []
+        for url in urls:
+            calls.append(call(url, stream=True))
+            calls.append(call().raise_for_status())
         magic_get.assert_has_calls(calls)
-        self.downloader.write_to_file.assert_has_calls([call(magic_get(), 'foo_2011-06-02t200403z_00.flv'),
-                                                        call(magic_get(), 'foo_2011-06-02t200403z_01.flv')])
+        self.downloader.write_to_file.assert_has_calls(expected_calls)
 
     @patch('seizure.lib.download.requests.get')
     def test_download(self, magic_get):
         expected = ['foo_2011-06-02t200403z_00.flv',
                     'foo_2011-06-02t200403z_01.flv']
         paths = self.downloader.download()
-        self.assertDownloaded(magic_get)
+        calls = [call(magic_get(), 'foo_2011-06-02t200403z_00.flv'),
+                 call(magic_get(), 'foo_2011-06-02t200403z_01.flv')]
+        self.assertDownloaded(magic_get, self.vod.download_urls.return_value,
+                              calls)
         self.assertEqual(paths, expected)
 
-    def test_download_folder(self):
+    @patch('seizure.lib.download.requests.get')
+    def test_download_folder(self, magic_get):
         paths = self.downloader.download(folder='testfolder')
         expected = [os.path.join('testfolder', 'foo_2011-06-02t200403z_00.flv'),
                     os.path.join('testfolder', 'foo_2011-06-02t200403z_01.flv')]
+        calls = [call(magic_get(), 'testfolder/foo_2011-06-02t200403z_00.flv'),
+                 call(magic_get(), 'testfolder/foo_2011-06-02t200403z_01.flv')]
+        self.assertDownloaded(magic_get, self.vod.download_urls.return_value,
+                              calls)
         self.assertEqual(paths, expected)
 
-    def test_download_chunk(self):
+    @patch('seizure.lib.download.requests.get')
+    def test_download_chunk(self, magic_get):
         self.downloader.download_chunk('url1', 'fname')
-        self.assertEqual(True, False)
+        self.assertDownloaded(magic_get, ['url1'], [call(magic_get(), 'fname')])
+
+    def test_default_filename(self):
+        self.assertEqual(
+            self.downloader.default_filename(
+                'http://www.testsite.com/vods/vod789798f.flv'
+            ),
+            'vod789798f.flv'
+        )
 
     def test_can_download_file(self):
-        self.assertEqual(True, False)
-
-    def test_write_to_file(self):
-        self.assertEqual(True, False)
+        self.assertEqual(self.downloader.can_download_file('fname'), True)
+        self.config.finished.return_value = True
+        self.assertEqual(self.downloader.can_download_file('fname'), False)
 
     def test_sanitize(self):
-        self.assertEqual(True, False)
+        sanitized = self.downloader.sanitize('TEStStriNG-:::4&^$%324"8.')
+        self.assertEqual(sanitized, 'teststring-43248')
 
     def test_generate_filename(self):
-        self.assertEqual(True, False)
+        fname = self.downloader.generate_filename(1)
+        self.assertEqual(fname, 'foo_2011-06-02t200403z_01.flv')
+        fname = self.downloader.generate_filename(99)
+        self.assertEqual(fname, 'foo_2011-06-02t200403z_99.flv')
+        fname = self.downloader.generate_filename(999)
+        self.assertEqual(fname, 'foo_2011-06-02t200403z_999.flv')
 
 
 if __name__ == '__main__':
