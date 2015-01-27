@@ -14,7 +14,7 @@ class TestTwitch(unittest.TestCase):
         A lot of keys in the response are not guaranteed to be constant, so
         we have to get rid of them before comparing equality.
         """
-        response = Twitch.request('channels/test_user1')
+        response = Twitch.request('kraken/channels/test_user1')
         to_pop = ['updated_at', 'background', 'video_banner', 'banner',
                   'mature', 'status', 'display_name', 'game', 'teams', 'logo']
         for k in to_pop:
@@ -47,11 +47,11 @@ class TestTwitch(unittest.TestCase):
 
     @skip_if_local('slow')
     def test_channel_doesnt_exist(self):
-        self.assertRaises(HTTPError, Twitch.request, 'channels/doesnotexist')
+        self.assertRaises(HTTPError, Twitch.request, 'kraken/channels/doesnotexist')
 
     @unittest.skipIf(os.environ.get('LOCAL', False), 'slow')
     def test_channel_videos(self):
-        response = Twitch.request('channels/test_user1/videos')
+        response = Twitch.request('kraken/channels/test_user1/videos')
         self.assertEqual(response['videos'], [])
 
 if __name__ == '__main__':
