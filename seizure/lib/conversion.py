@@ -8,7 +8,7 @@ class Converter(object):
         self.ffmpeg = ffmpeg_bin
 
     def convert(self, paths):
-        save_to = self.joined_filename(paths)
+        save_to = self.rename_extension(self.joined_filename(paths), 'mp4')
         filelist = self.create_filelist(paths)
         with tempfile.NamedTemporaryFile() as f:
             f.write(filelist)
