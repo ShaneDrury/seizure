@@ -9,6 +9,8 @@ class Converter(object):
 
     def convert(self, paths):
         save_to = self.rename_extension(self.joined_filename(paths), 'mp4')
+        if os.path.exists(save_to):
+            raise OSError("File {} exists".format(save_to))
         filelist = self.create_filelist(paths)
         with tempfile.NamedTemporaryFile() as f:
             f.write(filelist)
