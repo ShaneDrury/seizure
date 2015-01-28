@@ -7,6 +7,7 @@ class Config(object):
         'ffmpeg binary': 'ffmpeg',
         'download folder': '.',
         'finished': ['', ],
+        'quality': 'live',
         }
 
     def __init__(self, filename):
@@ -29,3 +30,19 @@ class Config(object):
         self.config['DEFAULT'][key] = str(value)
         with open(self.filename, 'w') as f:
             self.config.write(f)
+
+    @property
+    def all_finished(self):
+        return self.config['DEFAULT']['finished']
+
+    @property
+    def download_folder(self):
+        return self.config['DEFAULT']['download folder']
+
+    @property
+    def ffmpeg_binary(self):
+        return self.config['DEFAULT']['ffmpeg binary']
+
+    @property
+    def quality(self):
+        return self.config['DEFAULT']['quality']
