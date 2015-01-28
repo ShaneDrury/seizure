@@ -1,7 +1,8 @@
 Seizure: Download Twitch VODs
 =============================
-[![Build Status](https://travis-ci.org/ShaneDrury/seizure.svg?branch=master)](https://travis-ci.org/ShaneDrury/seizure)
-
+.. image:: https://travis-ci.org/ShaneDrury/seizure.svg?branch=master
+    :target: https://travis-ci.org/ShaneDrury/seizure
+    
 Seizure is a library that facilitates downloading Twitch VODs. 
 
 .. code-block:: bash
@@ -15,7 +16,7 @@ To install Seizure, simply:
 .. code-block:: bash
 
     $ mkvirtualenv seizure
-    $(seizure) python setup.py install
+    $(seizure) pip install seizure
 
 Usage
 -----
