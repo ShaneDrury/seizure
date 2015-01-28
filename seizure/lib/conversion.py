@@ -1,25 +1,25 @@
 import os
 import subprocess
+import tempfile
 
 
 class Converter(object):
     def __init__(self, ffmpeg_bin):
         self.ffmpeg = ffmpeg_bin
 
-    def convert(self, paths, to='mp4'):
+    def convert(self, paths):
         save_to = self.joined_filename(paths)
         filelist = self.create_filelist(paths)
-        tmp_filename = self.temp_filename(paths)
-        with open(tmp_filename, 'w') as f:
+        with tempfile.NamedTemporaryFile() as f:
             f.write(filelist)
-            self.convert_and_join(tmp_filename, save_to)
+            self.convert_and_join(f.name, save_to)
         return save_to
 
     def create_filelist(self, paths):
         filelist = ''
         for f in paths:
             filelist += 'file \'{}\'\n'.format(f)
-        return filelist
+        return bytes(filelist, 'UTF-8')
 
     def joined_filename(self, paths):
         """
@@ -28,10 +28,6 @@ class Converter(object):
         """
         base, ext = self.remove_digits(paths[0])
         return base + ext
-
-    def temp_filename(self, paths):
-        base, _ = self.remove_digits(paths[0])
-        return base + '.tmp'
 
     def convert_and_join(self, filelist, save_to):
         subprocess.check_call([self.ffmpeg, '-f', 'concat', '-i', filelist,
