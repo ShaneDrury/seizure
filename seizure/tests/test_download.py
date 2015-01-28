@@ -28,17 +28,6 @@ class TestDownloader(unittest.TestCase):
         self.downloader.write_to_file.assert_has_calls(expected_calls)
 
     @patch('seizure.lib.download.requests.get')
-    def test_download(self, magic_get):
-        expected = ['foo_2011-06-02t200403z_00.flv',
-                    'foo_2011-06-02t200403z_01.flv']
-        paths = self.downloader.download()
-        calls = [call(magic_get(), 'foo_2011-06-02t200403z_00.flv'),
-                 call(magic_get(), 'foo_2011-06-02t200403z_01.flv')]
-        self.assertDownloaded(magic_get, self.vod.download_urls.return_value,
-                              calls)
-        self.assertEqual(paths, expected)
-
-    @patch('seizure.lib.download.requests.get')
     def test_download_folder(self, magic_get):
         paths = self.downloader.download(folder='testfolder')
         expected = [
@@ -65,9 +54,11 @@ class TestDownloader(unittest.TestCase):
             'vod789798f.flv'
         )
 
-    def test_can_download_file(self):
+    @patch('seizure.lib.download.os.path.exists', return_value=True)
+    def test_can_download_file(self, mock_exists):
         self.assertEqual(self.downloader.can_download_file('fname'), True)
         self.config.finished.return_value = True
+
         self.assertEqual(self.downloader.can_download_file('fname'), False)
 
     def test_sanitize(self):

@@ -50,7 +50,7 @@ class TestTwitch(unittest.TestCase):
         self.assertRaises(HTTPError, Twitch.request,
                           'kraken/channels/doesnotexist')
 
-    @unittest.skipIf(os.environ.get('LOCAL', False), 'slow')
+    @skip_if_local('slow')
     def test_channel_videos(self):
         response = Twitch.request('kraken/channels/test_user1/videos')
         self.assertEqual(response['videos'], [])
