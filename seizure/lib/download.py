@@ -1,15 +1,13 @@
 import os
-import logging
 import re
 import unicodedata
-from progressbar import SimpleProgress, ProgressBar, AnimatedMarker, Bar
+import logging
 
 import requests
+from progressbar import ProgressBar, Bar, FileTransferSpeed, Percentage
 
 from seizure.lib.config import Config
 from seizure.lib.video import Video
-
-logger = logging.getLogger(__name__)
 
 
 class Downloader(object):
@@ -25,9 +23,13 @@ class Downloader(object):
             os.makedirs(folder)
         filenames = [os.path.join(folder, self.generate_filename(n))
                      for n, url in enumerate(video_urls)]
-        for v, f in zip(video_urls, filenames):
+        for n, (v, f) in enumerate(zip(video_urls, filenames)):
+            fraction = "{}/{}".format(n+1, len(filenames))
             if self.can_download_file(f):
+                logging.info("Downloading {} {}".format(fraction, v))
                 self.download_chunk(v, f)
+            else:
+                logging.info("Skipping {} {}".format(fraction, v))
         return filenames
 
     def default_folder(self):
@@ -38,7 +40,7 @@ class Downloader(object):
         response = requests.get(url, stream=True)
         response.raise_for_status()
         self.write_to_file(response, to)
-        finished = self.config.all_finished()
+        finished = self.config.all_finished
         finished.append(to)
         self.config.update('finished', finished)
 
@@ -46,20 +48,25 @@ class Downloader(object):
         return url.split('/')[-1]
 
     def can_download_file(self, filename):
+        if not os.path.exists(filename) and self.config.finished(filename):
+            finished = self.config.all_finished
+            finished.remove(filename)
+            self.config.update('finished', finished)
+            return True
         return not self.config.finished(filename)
 
     @staticmethod
     def write_to_file(response, to):
-        pbar = ProgressBar(widgets=[Bar()],
-                           maxval=int(response.headers['Content-Length'])/1024)
-        pbar.start()
-        with open(to, 'wb') as f:
-            for n, block in enumerate(response.iter_content(1024)):
-                if not block:
-                    break
-                f.write(block)
-                pbar.update(n+1)
-        pbar.finish()
+        widgets = [Bar(), Percentage(), ' ', FileTransferSpeed()]
+        with ProgressBar(widgets=widgets,
+                         maxval=int(response.headers['Content-Length'])) \
+                as pbar:
+            with open(to, 'wb') as f:
+                for n, block in enumerate(response.iter_content(1024)):
+                    if not block:
+                        break
+                    f.write(block)
+                    pbar.update(n * 1024)
 
     @staticmethod
     def sanitize(value):

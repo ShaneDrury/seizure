@@ -1,12 +1,13 @@
 import configparser
+import json
 import os
+import logging
 
 
 class Config(object):
     default_values = {
         'ffmpeg binary': 'ffmpeg',
-        'download folder': '.',
-        'finished': ['', ],
+        'download folder': '',
         'quality': 'live',
         }
 
@@ -22,18 +23,19 @@ class Config(object):
         return filename in self.config['DEFAULT']['finished']
 
     def write_initial(self):
+        logging.info('Writing initial config {}'.format(self.filename))
         self.config['DEFAULT'] = self.default_values
         with open(self.filename, 'w') as f:
             self.config.write(f)
 
     def update(self, key, value):
-        self.config['DEFAULT'][key] = str(value)
+        self.config['DEFAULT'][key] = json.dumps(value)
         with open(self.filename, 'w') as f:
             self.config.write(f)
 
     @property
     def all_finished(self):
-        return self.config['DEFAULT']['finished']
+        return json.loads(self.config['DEFAULT']['finished'])
 
     @property
     def download_folder(self):

@@ -14,13 +14,16 @@ class Converter(object):
         filelist = self.create_filelist(paths)
         with tempfile.NamedTemporaryFile() as f:
             f.write(filelist)
+            f.seek(0)
+            f.flush()
+            print(filelist)
             self.convert_and_join(f.name, save_to)
         return save_to
 
     def create_filelist(self, paths):
         filelist = ''
         for f in paths:
-            filelist += 'file \'{}\'\n'.format(f)
+            filelist += 'file \'{}\'\n'.format(os.path.abspath(f))
         return bytes(filelist, 'UTF-8')
 
     def joined_filename(self, paths):
