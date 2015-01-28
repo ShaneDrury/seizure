@@ -8,6 +8,7 @@ class Config(object):
     default_values = {
         'ffmpeg binary': 'ffmpeg',
         'download folder': '',
+        'finished': [''],
         'quality': 'live',
         }
 
