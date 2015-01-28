@@ -22,7 +22,3 @@ class TestConversion(unittest.TestCase):
     def test_convert(self):
         converted = self.converter.convert(self.paths, to='mp4')
         self.assertEqual(converted, 'path.mp4')
-
-    def test_join(self):
-        joined = self.converter.join(self.paths)
-        self.assertEqual(joined, 'path.flv')
