@@ -1,3 +1,4 @@
+import logging
 from seizure.lib.twitch import Twitch
 
 
@@ -10,7 +11,13 @@ class Video(object):
         )
 
     def download_urls(self, quality):
-        return [c['url'] for c in self.chunks[quality]]
+        try:
+            urls = [c['url'] for c in self.chunks[quality]]
+        except KeyError:
+            logging.error("{} doesn't exist. Choose from {}".
+                          format(quality, list(self.qualities)))
+            raise
+        return urls
 
     @property
     def chunks(self):

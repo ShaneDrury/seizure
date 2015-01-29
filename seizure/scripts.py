@@ -21,15 +21,20 @@ def main():
                              'and live.')
     parser.add_argument('-folder', metavar='folder', type=str,
                         help='Folder to download the VOD to.')
+    parser.add_argument('-ffmpeg', metavar='ffmpeg', type=str,
+                        help='Path to ffmpeg binary')
     args = parser.parse_args()
     config = Config(args.config)
     quality = args.quality or config.quality
     folder = args.folder or config.download_folder
+    ffmpeg = args.ffmpeg or config.ffmpeg_binary
+    if not os.path.exists(ffmpeg):
+        raise IOError("{} doesn't exist".format(ffmpeg))
     video = Video(args.code)
     downloader = Downloader(video, config)
     filenames = downloader.download(quality=quality,
                                     folder=folder)
-    converter = Converter(config.ffmpeg_binary)
+    converter = Converter(ffmpeg)
     converted = converter.convert(filenames)
     logging.info("Converted {}".format(converted))
 
