@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='seizure',
-    version='1.0.2',
+    version='1.0.3',
     packages=['seizure', 'seizure.lib'],
     license='',
     author='Shane Drury',
@@ -11,6 +11,6 @@ setup(
     entry_points={'console_scripts': ['seizure = seizure.scripts:main'], },
     keywords=['twitch', 'vod', 'download'],
     url='https://github.com/ShaneDrury/seizure',
-    download_url='https://github.com/ShaneDrury/seizure/tarball/1.0.2',
-    install_requires=['requests', 'progressbar'],
+    download_url='https://github.com/ShaneDrury/seizure/tarball/1.0.3',
+    install_requires=['requests>=2.5.0,<2.6.0 ', 'progressbar2>=2.7.3,<2.8.0'],
     )
