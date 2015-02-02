@@ -27,7 +27,9 @@ class TestConversion(unittest.TestCase):
         self.assertEqual(converted, 'path.mp4')
 
     def test_skip_conversion(self):
-        self.converter.convert(self.paths)
+
         with patch('seizure.lib.conversion.os.path.exists',
                    return_value=True):
-            self.assertRaises(OSError, self.converter.convert, self.paths)
+            self.converter.create_filelist = MagicMock()
+            self.converter.convert(self.paths)
+            assert not self.converter.create_filelist.called

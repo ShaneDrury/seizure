@@ -1,13 +1,16 @@
 import unittest
 
+from requests import Session
+
 from seizure.lib.video import Video
 from seizure.tests.util import skip_if_local
 
 
 class TestVideo(unittest.TestCase):
     def setUp(self):
-        self.code = '609886511'
-        self.video = Video(self.code)
+        with Session() as session:
+            self.code = '609886511'
+            self.video = Video(self.code, session)
 
     @skip_if_local('slow')
     def test_get_best_quality(self):

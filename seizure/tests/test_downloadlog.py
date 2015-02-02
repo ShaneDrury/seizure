@@ -1,14 +1,15 @@
 import os
 import unittest
 
-from seizure.config import Config
+from seizure.lib.downloadlog import DownloadLog
 
 
 class TestConfig(unittest.TestCase):
     def setUp(self):
-        self.fname = 'testconfig.ini'
-        self.config = Config(self.fname)
-        self.config.update('finished', ['path1', 'path2'])
+        self.fname = 'testlog.log'
+        self.config = DownloadLog(self.fname)
+        self.config.update('path1')
+        self.config.update('path2')
 
     def tearDown(self):
         os.remove(self.fname)

@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import MagicMock, patch, call
 
 from seizure.lib.download import Downloader
+from seizure.lib.util import sanitize
 
 
 class TestDownloader(unittest.TestCase):
@@ -18,6 +19,10 @@ class TestDownloader(unittest.TestCase):
         # noinspection PyTypeChecker
         self.downloader = Downloader(self.vod, self.config)
         self.downloader.write_to_file = MagicMock()
+        os.makedirs('testfolder')
+
+    def tearDown(self):
+        os.removedirs('testfolder')
 
     def assertDownloaded(self, magic_get, urls, expected_calls):
         calls = []
