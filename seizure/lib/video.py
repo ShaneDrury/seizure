@@ -3,10 +3,11 @@ from seizure.lib.twitch import Twitch
 
 
 class Video(object):
-    def __init__(self, code: str):
+    def __init__(self, code: str, session):
         self.code = code
-        self.vod = Twitch.request("api/videos/a{}".format(self.code))
-        self.info = Twitch.request(
+        self.twitch = Twitch(session)
+        self.vod = self.twitch.request("api/videos/a{}".format(self.code))
+        self.info = self.twitch.request(
             "kraken/videos/a{}?on_site=1".format(self.code)
         )
 

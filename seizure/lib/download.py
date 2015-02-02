@@ -36,7 +36,7 @@ class Downloader(object):
         response = requests.get(url, stream=True)
         response.raise_for_status()
         self.write_to_file(response, to)
-        self.log.update(url)
+        self.log.update(to)
 
     @staticmethod
     def default_filename(url):

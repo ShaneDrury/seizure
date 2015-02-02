@@ -2,6 +2,8 @@ import argparse
 import logging
 import os
 
+from requests import Session
+
 from seizure.config import default_values
 from seizure.lib.conversion import Converter
 from seizure.lib.download import Downloader
@@ -32,8 +34,10 @@ def main():
     ffmpeg = args.ffmpeg or default_values['ffmpeg']
     if not os.path.exists(ffmpeg):
         raise IOError("{} doesn't exist".format(ffmpeg))
-    video = Video(args.code)
-    download_log = args.log or default_folder(video)
+    with Session() as session:
+        video = Video(args.code, session)
+    download_log = args.log or os.path.join(default_folder(video),
+                                            'download.log')
     downloader = Downloader(video, DownloadLog(download_log))
     filenames = downloader.download(quality=quality, folder=folder)
     converter = Converter(ffmpeg)
