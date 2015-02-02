@@ -25,6 +25,7 @@ class TestDownloader(unittest.TestCase):
             calls.append(call(url, stream=True))
             calls.append(call().raise_for_status())
         magic_get.assert_has_calls(calls)
+        # noinspection PyUnresolvedReferences
         self.downloader.write_to_file.assert_has_calls(expected_calls)
 
     @patch('seizure.lib.download.requests.get')
@@ -62,7 +63,7 @@ class TestDownloader(unittest.TestCase):
         self.assertEqual(self.downloader.can_download_file('fname'), False)
 
     def test_sanitize(self):
-        sanitized = self.downloader.sanitize('TEStStriNG-:::4&^$%324"8.')
+        sanitized = sanitize('TEStStriNG-:::4&^$%324"8.')
         self.assertEqual(sanitized, 'teststring-43248')
 
     def test_generate_filename(self):

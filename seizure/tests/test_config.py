@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from seizure.lib.config import Config
+from seizure.config import Config
 
 
 class TestConfig(unittest.TestCase):

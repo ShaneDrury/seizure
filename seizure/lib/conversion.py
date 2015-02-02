@@ -16,11 +16,11 @@ class Converter(object):
             f.write(filelist)
             f.seek(0)
             f.flush()
-            print(filelist)
             self.convert_and_join(f.name, save_to)
         return save_to
 
-    def create_filelist(self, paths):
+    @staticmethod
+    def create_filelist(paths):
         filelist = ''
         for f in paths:
             filelist += 'file \'{}\'\n'.format(os.path.abspath(f))
