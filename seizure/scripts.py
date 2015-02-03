@@ -57,6 +57,9 @@ def main():
         converter = Converter(args.ffmpeg)
         converted = converter.convert(filenames)
         logging.info("Converted {}".format(converted))
+        for file in filenames:
+            logging.info("Removing {}".format(file))
+            os.remove(file)
 
 if __name__ == '__main__':
     main()
