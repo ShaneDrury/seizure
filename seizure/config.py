@@ -1,5 +1,5 @@
 default_values = {
     'ffmpeg': '/bin/ffmpeg',
-    'folder': '',
+    'folder': '.',
     'quality': 'live',
     }

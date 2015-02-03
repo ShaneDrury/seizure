@@ -16,7 +16,7 @@ class Downloader(object):
 
     def download(self, quality=None, folder=None):
         quality = quality or self.vod.get_best_quality()
-        folder = folder or default_folder(self.vod)
+        folder = folder or ''
         video_urls = self.vod.download_urls(quality)
         if not os.path.exists(folder):
             os.makedirs(folder)

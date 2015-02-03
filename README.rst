@@ -24,3 +24,4 @@ Usage
 
     $ workon seizure
     $(seizure) seizure 608495073
+
