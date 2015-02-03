@@ -5,9 +5,6 @@ class DownloadLog(object):
     def __init__(self, filename):
         self.filename = filename
         self.log = self.get_log(filename)
-        print("OPENING")
-        print(filename)
-        print(self.log)
 
     @staticmethod
     def get_log(filename):
@@ -19,14 +16,10 @@ class DownloadLog(object):
 
     def write_log(self):
         with open(self.filename, 'w') as f:
-            print("WRITING")
-            print(self.log)
             for line in self.log:
                 f.write(line + '\n')
 
     def update(self, filename):
-        print("UPDATING")
-        print(self.log, filename)
         self.log.append(filename)
         self.write_log()
 
@@ -35,5 +28,4 @@ class DownloadLog(object):
         self.write_log()
 
     def finished(self, filename):
-        print("FINISHED")
         return filename in self.log

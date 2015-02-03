@@ -1,18 +1,18 @@
 import os
 import logging
 
-import requests
 from progressbar import ProgressBar, Bar, FileTransferSpeed, Percentage
 
 from seizure.lib.downloadlog import DownloadLog
-from seizure.lib.util import sanitize, default_folder
+from seizure.lib.util import sanitize
 from seizure.lib.video import Video
 
 
 class Downloader(object):
-    def __init__(self, vod: Video, log: DownloadLog):
+    def __init__(self, vod: Video, log: DownloadLog, session):
         self.vod = vod
         self.log = log
+        self.session = session
 
     def download(self, quality=None, folder=None):
         quality = quality or self.vod.get_best_quality()
@@ -33,7 +33,7 @@ class Downloader(object):
 
     def download_chunk(self, url, to):
         to = to or self.default_filename(url)
-        response = requests.get(url, stream=True)
+        response = self.session.get(url, stream=True)
         response.raise_for_status()
         self.write_to_file(response, to)
         self.log.update(to)

@@ -18,7 +18,8 @@ logging.basicConfig(level=logging.INFO)
 def main():
     parser = argparse.ArgumentParser(
         description='Download Twitch VODs.',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        argument_default=argparse.SUPPRESS
     )
     parser.add_argument('code', metavar='code', type=str, help='VOD code')
     parser.add_argument('-q', '--quality', metavar='quality', type=str,
@@ -32,7 +33,6 @@ def main():
                         default=default_values['ffmpeg'],
                         help='path to ffmpeg binary')
     parser.add_argument('-l', '--log', metavar='log', type=str,
-                        default=argparse.SUPPRESS,
                         help='path to download log (default: '
                              '{FOLDER}/{VOD_TITLE}/download.log)')
     args = parser.parse_args()
@@ -40,13 +40,18 @@ def main():
         raise IOError("{} doesn't exist".format(args.ffmpeg))
     with Session() as session:
         video = Video(args.code, session)
-    download_log = args.log or os.path.join(args.folder, default_folder(video),
-                                            'download.log')
-    downloader = Downloader(video, DownloadLog(download_log))
-    filenames = downloader.download(quality=args.quality,
-                                    folder=os.path.join(
-                                        args.folder, default_folder(video)
-                                    ))
+        try:
+            download_log = args.log
+        except AttributeError:
+            download_log = os.path.join(args.folder, default_folder(video),
+                                        'download.log')
+        downloader = Downloader(video, DownloadLog(download_log), session)
+        filenames = downloader.download(
+            quality=args.quality,
+            folder=os.path.join(
+                args.folder, default_folder(video)
+            )
+        )
     converter = Converter(args.ffmpeg)
     converted = converter.convert(filenames)
     logging.info("Converted {}".format(converted))

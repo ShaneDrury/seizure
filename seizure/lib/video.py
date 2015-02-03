@@ -1,10 +1,12 @@
 import logging
+import re
+from urllib.parse import urlsplit
 from seizure.lib.twitch import Twitch
 
 
 class Video(object):
     def __init__(self, code: str, session):
-        self.code = code
+        self.code = self.parse_code(code)
         self.twitch = Twitch(session)
         self.vod = self.twitch.request("api/videos/a{}".format(self.code))
         self.info = self.twitch.request(
@@ -49,3 +51,9 @@ class Video(object):
     def get_best_quality(self):
         return sorted(self.qualities,
                       key=lambda x: Twitch.QUALITIES.index(x))[-1]
+
+    def parse_code(self, code):
+        if re.match('^\w+$', code):
+            return code
+        else:
+            return urlsplit(code).path.split('/')[-1]
