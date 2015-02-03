@@ -21,7 +21,8 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         argument_default=argparse.SUPPRESS
     )
-    parser.add_argument('code', metavar='code', type=str, help='VOD code')
+    parser.add_argument('code', metavar='code', type=str, help='VOD code',
+                        nargs='+')
     parser.add_argument('-q', '--quality', metavar='quality', type=str,
                         default=default_values['quality'],
                         help='quality of VOD: 240p, 360p, 480p, live')
@@ -38,23 +39,24 @@ def main():
     args = parser.parse_args()
     if not os.path.exists(args.ffmpeg):
         raise IOError("{} doesn't exist".format(args.ffmpeg))
-    with Session() as session:
-        video = Video(args.code, session)
-        try:
-            download_log = args.log
-        except AttributeError:
-            download_log = os.path.join(args.folder, default_folder(video),
-                                        'download.log')
-        downloader = Downloader(video, DownloadLog(download_log), session)
-        filenames = downloader.download(
-            quality=args.quality,
-            folder=os.path.join(
-                args.folder, default_folder(video)
+    for code in args.code:
+        with Session() as session:
+            video = Video(code, session)
+            try:
+                download_log = args.log
+            except AttributeError:
+                download_log = os.path.join(args.folder, default_folder(video),
+                                            'download.log')
+            downloader = Downloader(video, DownloadLog(download_log), session)
+            filenames = downloader.download(
+                quality=args.quality,
+                folder=os.path.join(
+                    args.folder, default_folder(video)
+                )
             )
-        )
-    converter = Converter(args.ffmpeg)
-    converted = converter.convert(filenames)
-    logging.info("Converted {}".format(converted))
+        converter = Converter(args.ffmpeg)
+        converted = converter.convert(filenames)
+        logging.info("Converted {}".format(converted))
 
 if __name__ == '__main__':
     main()

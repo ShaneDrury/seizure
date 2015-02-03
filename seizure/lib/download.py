@@ -20,7 +20,7 @@ class Downloader(object):
         video_urls = self.vod.download_urls(quality)
         if not os.path.exists(folder):
             os.makedirs(folder)
-        filenames = [os.path.join(folder, self.generate_filename(n))
+        filenames = [os.path.join(folder, self.generate_filename(n, quality))
                      for n, url in enumerate(video_urls)]
         for n, (v, f) in enumerate(zip(video_urls, filenames)):
             fraction = "{}/{}".format(n+1, len(filenames))
@@ -61,8 +61,8 @@ class Downloader(object):
                     f.write(block)
                     pbar.update(n * 1024)
 
-    def generate_filename(self, num):
+    def generate_filename(self, num, quality):
         title = sanitize(self.vod.title)
         t = sanitize(self.vod.start_time)
         num = str(num).zfill(2)
-        return "{}_{}_{}.{}".format(title, t, num, self.vod.extension)
+        return "{}_{}_{}_{}.{}".format(title, t, num, quality, self.vod.extension)
