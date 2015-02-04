@@ -16,8 +16,10 @@ class TestDownloader(unittest.TestCase):
         self.vod.start_time = '2011-06-02T20:04:03Z'
         self.vod.extension = 'flv'
         self.vod.download_urls.return_value = ['url1', 'url2']
+        self.session = MagicMock()
+        # self.session.get = MagicMock()
         # noinspection PyTypeChecker
-        self.downloader = Downloader(self.vod, self.config)
+        self.downloader = Downloader(self.vod, self.config, self.session)
         self.downloader.write_to_file = MagicMock()
         os.makedirs('testfolder')
 
@@ -33,24 +35,24 @@ class TestDownloader(unittest.TestCase):
         # noinspection PyUnresolvedReferences
         self.downloader.write_to_file.assert_has_calls(expected_calls)
 
-    @patch('seizure.lib.download.requests.get')
-    def test_download_folder(self, magic_get):
+    def test_download_folder(self):
         paths = self.downloader.download(folder='testfolder')
         expected = [
-            os.path.join('testfolder', 'foo_2011-06-02t200403z_00.flv'),
-            os.path.join('testfolder', 'foo_2011-06-02t200403z_01.flv')
+            os.path.join('testfolder', 'foo_2011-06-02t200403z_240p_00.flv'),
+            os.path.join('testfolder', 'foo_2011-06-02t200403z_240p_01.flv')
         ]
-        calls = [call(magic_get(), 'testfolder/foo_2011-06-02t200403z_00.flv'),
-                 call(magic_get(), 'testfolder/foo_2011-06-02t200403z_01.flv')]
-        self.assertDownloaded(magic_get, self.vod.download_urls.return_value,
-                              calls)
+        calls = [call(self.session.get(),
+                      'testfolder/foo_2011-06-02t200403z_240p_00.flv'),
+                 call(self.session.get(),
+                      'testfolder/foo_2011-06-02t200403z_240p_01.flv')]
+        self.assertDownloaded(self.session.get,
+                              self.vod.download_urls.return_value, calls)
         self.assertEqual(paths, expected)
 
-    @patch('seizure.lib.download.requests.get')
-    def test_download_chunk(self, magic_get):
+    def test_download_chunk(self):
         self.downloader.download_chunk('url1', 'fname')
-        self.assertDownloaded(magic_get, ['url1'],
-                              [call(magic_get(), 'fname')])
+        self.assertDownloaded(self.session.get, ['url1'],
+                              [call(self.session.get(), 'fname')])
 
     def test_default_filename(self):
         self.assertEqual(
@@ -72,12 +74,12 @@ class TestDownloader(unittest.TestCase):
         self.assertEqual(sanitized, 'teststring-43248')
 
     def test_generate_filename(self):
-        fname = self.downloader.generate_filename(1)
-        self.assertEqual(fname, 'foo_2011-06-02t200403z_01.flv')
-        fname = self.downloader.generate_filename(99)
-        self.assertEqual(fname, 'foo_2011-06-02t200403z_99.flv')
-        fname = self.downloader.generate_filename(999)
-        self.assertEqual(fname, 'foo_2011-06-02t200403z_999.flv')
+        fname = self.downloader.generate_filename(1, 'live')
+        self.assertEqual(fname, 'foo_2011-06-02t200403z_live_01.flv')
+        fname = self.downloader.generate_filename(99, '240p')
+        self.assertEqual(fname, 'foo_2011-06-02t200403z_240p_99.flv')
+        fname = self.downloader.generate_filename(999, '360p')
+        self.assertEqual(fname, 'foo_2011-06-02t200403z_360p_999.flv')
 
 
 if __name__ == '__main__':

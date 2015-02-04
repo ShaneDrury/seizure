@@ -65,4 +65,5 @@ class Downloader(object):
         title = sanitize(self.vod.title)
         t = sanitize(self.vod.start_time)
         num = str(num).zfill(2)
-        return "{}_{}_{}_{}.{}".format(title, t, num, quality, self.vod.extension)
+        return "{}_{}_{}_{}.{}".format(title, t, quality, num,
+                                       self.vod.extension)
