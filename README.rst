@@ -6,7 +6,9 @@ Seizure: Download Twitch VODs
 Seizure is a library that facilitates downloading Twitch VODs. 
 
 .. code-block:: bash
+
     $ seizure 608495073
+    $ seizure http://www.twitch.tv/gamesdonequick/b/609886511
 
 Installation
 ------------
@@ -20,4 +22,4 @@ Usage
 -----
 .. code-block:: bash
 
-    $ seizure <video_code>
+    $ seizure <video_code> [<video_code> ...]
