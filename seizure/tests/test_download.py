@@ -17,7 +17,6 @@ class TestDownloader(unittest.TestCase):
         self.vod.extension = 'flv'
         self.vod.download_urls.return_value = ['url1', 'url2']
         self.session = MagicMock()
-        # self.session.get = MagicMock()
         # noinspection PyTypeChecker
         self.downloader = Downloader(self.vod, self.config, self.session)
         self.downloader.write_to_file = MagicMock()
@@ -65,8 +64,8 @@ class TestDownloader(unittest.TestCase):
     @patch('seizure.lib.download.os.path.exists', return_value=True)
     def test_can_download_file(self, mock_exists):
         self.assertEqual(self.downloader.can_download_file('fname'), True)
+        mock_exists.assert_called_with('fname')
         self.config.finished.return_value = True
-
         self.assertEqual(self.downloader.can_download_file('fname'), False)
 
     def test_sanitize(self):

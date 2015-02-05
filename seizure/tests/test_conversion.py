@@ -32,4 +32,5 @@ class TestConversion(unittest.TestCase):
                    return_value=True):
             self.converter.create_filelist = MagicMock()
             self.converter.convert(self.paths)
+            # noinspection PyUnresolvedReferences
             assert not self.converter.create_filelist.called

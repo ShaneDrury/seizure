@@ -1,6 +1,7 @@
 import logging
 import re
 from urllib.parse import urlsplit
+
 from seizure.lib.twitch import Twitch
 
 
